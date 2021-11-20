@@ -16,14 +16,18 @@ hook.Add('Slib_PlayAnimation', 'ForwardJumpAnimationTeleport', function(anim_inf
 	local target_position = ForwardJump.targetPosition
 	local animator_final_jumppos =  animator:GetPos()
 	local animator_jumppos = animator:GetPos() + Vector(0, 0, 20)
+	local is_ground_detected = false
 
 	local phys = animator:GetPhysicsObject()
 	if IsValid(phys) then phys:EnableMotion(false) end
 
 	do
 		local tr = ForwardJump:TraceGroundCollision()
-		animator_final_jumppos.z = tr.HitPos.z
-		target_position.z = animator_final_jumppos.z
+		if tr.Hit then
+			animator_final_jumppos.z = tr.HitPos.z
+			target_position.z = animator_final_jumppos.z
+			is_ground_detected = true
+		end
 	end
 
 	local start_jump_delay = .8
@@ -60,9 +64,9 @@ hook.Add('Slib_PlayAnimation', 'ForwardJumpAnimationTeleport', function(anim_inf
 		local addspeed = 10
 
 		if anim_info.sequence == 'root_fast' then
-			stagetwo = CurTime() + .25
-		else
 			stagetwo = CurTime() + .4
+		else
+			stagetwo = CurTime() + .5
 		end
 
 		animator:slibCreateTimer('lerp', 0, 0, function()
@@ -70,9 +74,11 @@ hook.Add('Slib_PlayAnimation', 'ForwardJumpAnimationTeleport', function(anim_inf
 			if stagetwo > CurTime() then
 				animator:SetPos(LerpVector(speed, animator:GetPos(), animator_jumppos))
 			else
-				speed = slib.fixedDeltaTime * (slib_magnitude(target:GetVelocity()) / 20)
-				animator_final_jumppos.z = target:GetPos().z
-				target_position.z = animator_final_jumppos.z
+				if not is_ground_detected then
+					speed = slib.fixedDeltaTime * (slib_magnitude(target:GetVelocity()) / 20)
+					animator_final_jumppos.z = target:GetPos().z
+					target_position.z = animator_final_jumppos.z
+				end
 				animator:SetPos(LerpVector(speed, animator:GetPos(), animator_final_jumppos))
 			end
 		end)
