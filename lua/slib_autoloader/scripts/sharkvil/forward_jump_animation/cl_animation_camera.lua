@@ -4,7 +4,7 @@ local CurTime = CurTime
 --
 CreateClientConVar('cl_forward_jump_anim_firstperson', '0', true, false)
 
-hook.Add('Slib_PlayAnimation', 'CalcViewAnimationForwardJumpTP', function(anim_info)
+hook.Add('slib.AnimationPlaying', 'CalcViewAnimationForwardJumpTP', function(anim_info)
 	if anim_info.name ~= 'forward_jump_anim' then return end
 	if anim_info.entity ~=  LocalPlayer() then return end
 	if GetConVar('cl_forward_jump_anim_firstperson'):GetBool() then return end
@@ -59,7 +59,7 @@ hook.Add('Slib_PlayAnimation', 'CalcViewAnimationForwardJumpTP', function(anim_i
 	end)
 end)
 
-hook.Add('Slib_PlayAnimation', 'CalcViewAnimationForwardJumpFP', function(anim_info)
+hook.Add('slib.AnimationPlaying', 'CalcViewAnimationForwardJumpFP', function(anim_info)
 	if anim_info.name ~= 'forward_jump_anim' then return end
 	if anim_info.entity ~=  LocalPlayer() then return end
 	if not GetConVar('cl_forward_jump_anim_firstperson'):GetBool() then return end

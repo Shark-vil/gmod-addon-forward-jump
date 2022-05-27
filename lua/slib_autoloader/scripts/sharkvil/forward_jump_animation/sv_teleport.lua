@@ -7,7 +7,7 @@ local sound_effects = {
 	Sound('sharkvil/forward_jump_animation/somersault_02.wav'),
 }
 
-hook.Add('Slib_PlayAnimation', 'ForwardJumpAnimationTeleport', function(anim_info)
+hook.Add('slib.AnimationPlaying', 'ForwardJumpAnimationTeleport', function(anim_info)
 	if anim_info.name ~= 'forward_jump_anim' then return end
 
 	local ForwardJump = anim_info.data.ForwardJump
